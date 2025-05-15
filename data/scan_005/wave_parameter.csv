@@ -1,0 +1,7 @@
+Parameter,Value
+shape,SQU
+frequency,1000.0
+amplitude,3.3
+offset,0
+burst_ncycles,1
+square_dutycycle,50

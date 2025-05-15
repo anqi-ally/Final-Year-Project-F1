@@ -1,0 +1,16 @@
+Parameter,Value,Source
+shape,SQU,Signal
+frequency,1000.0,Signal
+amplitude,3.3,Signal
+offset,0,Signal
+burst_ncycles,1,Signal
+square_dutycycle,50,Signal
+scan_axis,Z,Scan
+cross_axis,Y,Scan
+scan_length,45,Scan
+scan_points,10,Scan
+cross_length,45,Scan
+cross_points,10,Scan
+start_col,2,Scan
+scan_step,28000,Scan
+cross_step,28000,Scan
