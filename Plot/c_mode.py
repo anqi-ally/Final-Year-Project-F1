@@ -210,4 +210,4 @@ def process_all_scans(base_path="data", start_index=4, show_labels=True):
 
 # example 用法（运行时取消注释）
 # from b_mode import process_all_scans
-process_all_scans(base_path="data", start_index=11)  # 会自动处理 data/scan_xxx/filtered 中的所有扫描
+process_all_scans(base_path="data", start_index=9)  # 会自动处理 data/scan_xxx/filtered 中的所有扫描

@@ -4,7 +4,7 @@ import os
 import re
 
 # 设置目标扫描文件夹路径
-scan_folder = "data/scan_011"
+scan_folder = "data/scan_0011"
 output_folder = os.path.join(scan_folder, "filtered")
 os.makedirs(output_folder, exist_ok=True)
 

@@ -4,7 +4,7 @@ import os
 import re
 
 # 设置目标扫描文件夹路径
-scan_folder = "data/scan_009"
+scan_folder = "data/scan_001"
 
 # 获取所有符合 row_x_col_y.csv 命名的文件
 file_list = [f for f in os.listdir(scan_folder) if re.match(r"row_\d+_col_\d+\.csv", f)]
