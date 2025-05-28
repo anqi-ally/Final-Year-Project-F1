@@ -3,25 +3,25 @@ import numpy as np
 import os
 import re
 
-# 设置目标扫描文件夹路径
+# Set the target scan folder path
 scan_folder = "data/scan_0011"
 output_folder = os.path.join(scan_folder, "filtered")
 os.makedirs(output_folder, exist_ok=True)
 
-# 获取所有符合 row_x_col_y.csv 命名的文件
+# Get all files matching the pattern row_x_col_y.csv
 file_list = [f for f in os.listdir(scan_folder) if re.match(r"row_\d+_col_\d+\.csv", f)]
 
 def extract_non_flat_waveform(df, time_threshold=0.00026):
     time = df["Time (s)"].astype(float).values
     amp = df["Amplitude (V)"].astype(float).values
 
-    # 保留 time > 0.00026 的数据
+    # Keep data where time > 0.00026
     valid_indices = np.where(time > time_threshold)[0]
     if len(valid_indices) == 0:
-        return pd.DataFrame(columns=["Time (s)", "Amplitude (V)"])  # 无满足条件的数据
+        return pd.DataFrame(columns=["Time (s)", "Amplitude (V)"])
 
     cut_start = valid_indices[0]
-    time_final = time[cut_start:] - time[cut_start]  # 将时间重新归零
+    time_final = time[cut_start:] - time[cut_start]  # Re-zero time starting from the threshold
     amp_final = amp[cut_start:]
 
     return pd.DataFrame({
@@ -29,11 +29,7 @@ def extract_non_flat_waveform(df, time_threshold=0.00026):
         "Amplitude (V)": amp_final
     })
 
-
-
-
-
-# 处理并保存
+# Process and save
 for f in file_list:
     file_path = os.path.join(scan_folder, f)
     df = pd.read_csv(file_path, skiprows=1)

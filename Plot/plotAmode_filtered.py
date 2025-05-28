@@ -3,29 +3,20 @@ import matplotlib.pyplot as plt
 import os
 import re
 
-# 设置你的目标文件夹
-filtered_folder = "data/scan_013/filtered1"
+# Set path to filtered data
+filtered_folder = "data/scan_009/filtered"
 
-# 获取所有 row_x_col_y.csv 文件
+# Get all files matching the naming pattern row_x_col_y.csv
 file_list = [f for f in os.listdir(filtered_folder) if re.match(r"row_\d+_col_\d+\.csv", f)]
 
-# 提取最大行列数
+# Extract maximum row and column indices for subplot layout
 positions = [re.findall(r"\d+", f) for f in file_list]
 rows = max(int(p[0]) for p in positions)
 cols = max(int(p[1]) for p in positions)
 
-# 创建子图
+# Create subplots
 fig, axes = plt.subplots(rows, cols, figsize=(4 * cols, 3 * rows), sharex=True, sharey=True)
 
-# 保证 axes 是二维索引结构
-if rows == 1 and cols == 1:
-    axes = [[axes]]
-elif rows == 1:
-    axes = [axes]
-elif cols == 1:
-    axes = [[ax] for ax in axes]
-
-# 绘图
 for f in file_list:
     match = re.findall(r"\d+", f)
     row_idx = int(match[0]) - 1
@@ -33,12 +24,14 @@ for f in file_list:
     file_path = os.path.join(filtered_folder, f)
 
     df = pd.read_csv(file_path)
-    ax = axes[row_idx][col_idx]
+    ax = axes[row_idx, col_idx] if rows > 1 and cols > 1 else (
+        axes[col_idx] if rows == 1 else axes[row_idx]
+    )
     if not df.empty:
-        ax.plot(df["Time (µs)"], df["Voltage (V)"], lw=1)
+        ax.plot(df["Time (s)"], df["Amplitude (V)"], lw=1)
     ax.set_title(f"Row {row_idx+1}, Col {col_idx+1}")
     ax.grid(True)
 
-plt.suptitle("Filtered Waveforms from 'filtered1'", fontsize=16)
-plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+plt.suptitle(f"Filtered Scan Result: {filtered_folder}", fontsize=16)
+plt.tight_layout()
 plt.show()

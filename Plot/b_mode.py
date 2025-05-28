@@ -19,7 +19,7 @@ def parse_row_col(filename):
 def get_depth_axis(filepath, sound_speed=1480):
     df = pd.read_csv(filepath)
     if df.shape[1] < 1:
-        raise ValueError("CSV 中缺少时间列")
+        raise ValueError("Missing time column in CSV")
     time_array = pd.to_numeric(df.iloc[:, 0], errors='coerce').dropna().values
     depth_mm = (time_array * sound_speed / 2) * 1000
     return depth_mm
@@ -38,7 +38,7 @@ def build_envelope_volume(folder_path):
             max_col = max(max_col, col)
 
     if waveform_length is None:
-        raise ValueError("未能识别任何有效的波形长度。")
+        raise ValueError("No valid waveform length detected.")
 
     envelope_volume = np.zeros((max_row, max_col, waveform_length))
 
@@ -91,7 +91,7 @@ def plot_single_cross_section(envelope_volume, depth_axis, row_index=None, col_i
         y_label = f"Row index @ col {col_index}"
         title = f"B-mode col cut @ col {col_index}"
     else:
-        raise ValueError("必须指定 row_index 或 col_index")
+        raise ValueError("Either row_index or col_index must be specified")
 
     max_val = np.max(data)
     eps = max_val / (10**(40 / 20))
@@ -116,38 +116,38 @@ if __name__ == "__main__":
     scan_folders = [f for f in os.listdir(base_path) if f.startswith("scan_")]
 
     if not scan_folders:
-        print("未找到任何 scan_xxx 文件夹")
+        print("No scan_xxx folders found")
         exit()
 
-    print("可用扫描文件夹：")
+    print("Available scan folders:")
     for i, folder in enumerate(scan_folders):
         print(f"{i + 1}. {folder}")
 
-    selection = input("请输入要处理的扫描编号（例如输入 1 表示第一个 scan_xxx）: ").strip()
+    selection = input("Enter the index of the scan folder to process (e.g., 1 for the first scan_xxx): ").strip()
     try:
         selected_index = int(selection) - 1
         scan_name = scan_folders[selected_index]
     except (ValueError, IndexError):
-        print("输入无效，程序终止。")
+        print("Invalid input. Program exiting.")
         exit()
 
     scan_dir = os.path.join(base_path, scan_name)
     filtered_path = os.path.join(scan_dir, "filtered")
 
     if not os.path.isdir(filtered_path):
-        print(f"[错误] {scan_name} 中没有 filtered 文件夹")
+        print(f"[Error] No 'filtered' folder in {scan_name}")
     else:
         csv_files = [f for f in os.listdir(filtered_path) if f.endswith(".csv")]
         if not csv_files:
-            print(f"[错误] {scan_name} 的 filtered 文件夹中无 .csv 文件")
+            print(f"[Error] No .csv files in {scan_name}/filtered/")
         else:
-            print(f"[处理中] {scan_name}/filtered/")
+            print(f"[Processing] {scan_name}/filtered/")
             scan_params = read_scan_params(setup_path)
             scan_axis = scan_params.get("scan_axis", "Z")
             cross_axis = scan_params.get("cross_axis", "Y")
             envelope_volume = build_envelope_volume(scan_dir)
             depth_axis = get_depth_axis(os.path.join(filtered_path, csv_files[0]))
 
-            # 👉 修改这里选择显示哪一行或哪一列
+            # 👉 Modify here to choose which row or column to display
             plot_single_cross_section(envelope_volume, depth_axis, col_index=13)
             # plot_single_cross_section(envelope_volume, depth_axis, row_index=1)

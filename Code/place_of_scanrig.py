@@ -3,8 +3,8 @@ from rig_function import send_command
 
 def get_all_positions(sock):
     """
-    获取所有轴（X, Y, Z）的编码器和脉冲位置。
-    返回一个字典格式：
+    Retrieve encoder and pulse positions for all axes (X, Y, Z).
+    Returns a dictionary in the format:
     {
         "X": {"encoder": ..., "pulse": ...},
         "Y": {"encoder": ..., "pulse": ...},
@@ -15,7 +15,7 @@ def get_all_positions(sock):
     pulse_resp = send_command(sock, "PP")
 
     try:
-        # 响应格式应为 U:X:Y:Z
+        # Response format is expected to be U:X:Y:Z
         encoder_vals = list(map(int, encoder_resp.split(":")))
         pulse_vals = list(map(int, pulse_resp.split(":")))
 
@@ -31,7 +31,7 @@ def get_all_positions(sock):
 
 def print_all_positions(sock):
     """
-    打印当前 X/Y/Z 轴的编码器和脉冲位置。
+    Print the current encoder and pulse positions for X/Y/Z axes.
     """
     pos = get_all_positions(sock)
 

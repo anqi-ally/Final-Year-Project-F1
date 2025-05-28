@@ -19,19 +19,19 @@ def mm_to_pulse(mm):
 
 # ✅ Main program
 def main():
-    # 单位转换
+    # Unit conversion: mm to pulse
     A_SCAN_PARAMS["X"] = mm_to_pulse(A_SCAN_PARAMS["X"])
     A_SCAN_PARAMS["Y"] = mm_to_pulse(A_SCAN_PARAMS["Y"])
     A_SCAN_PARAMS["Z"] = mm_to_pulse(A_SCAN_PARAMS["Z"])
 
-    # 建立 TCP 连接
+    # Establish TCP connection
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.connect((HOST, PORT))
 
-        # 设置为增量或绝对模式
-        send_command(sock, "INC")  # 一般是 INC
+        # Set movement mode
+        send_command(sock, "INC")
 
-        # 依次启用并移动 X, Y, Z
+        # Sequentially enable and move axes X, Y, Z
         for axis in ["X", "Y", "Z"]:
             distance = A_SCAN_PARAMS.get(axis)
             if distance:
